@@ -55,7 +55,6 @@ async function editEvent(eventId, event) {
 
   title.value = event.title;
   description.value = event.description;
-  price.value = event.price;
   image.value = event.image;
   category.value = event.category;
 
@@ -67,7 +66,6 @@ function endEditEvent() {
 
   let title = document.querySelector(".title").value;
   let description = document.querySelector(".description").value;
-  let price = document.querySelector(".price").value;
   let image = document.querySelector(".image").value;
   let category = document.querySelector(".category").value;
 

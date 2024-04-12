@@ -1,18 +1,8 @@
 class Event {
-  constructor(
-    title,
-    description,
-    image,
-    price,
-    category,
-    userId,
-    createdAt,
-    status
-  ) {
+  constructor(title, description, image, category, userId, createdAt, status) {
     this.title = title;
     this.description = description;
     this.image = image;
-    this.price = price;
     this.category = category;
     this.userId = userId;
     this.createdAt = createdAt;
