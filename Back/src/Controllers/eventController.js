@@ -1,4 +1,4 @@
-const { Listing } = require("../Models/Event");
+const { event } = require("../Models/Event");
 const client = require("../Services/Connection");
 const { ObjectId } = require("bson");
 const { extractToken } = require("../Utils/extractToken");
@@ -18,7 +18,7 @@ const createEvent = async (request, response) => {
   }
 
   try {
-    let listing = new Listing(
+    let event = new event(
       request.body.title,
       request.body.description,
       request.body.image,
@@ -30,9 +30,9 @@ const createEvent = async (request, response) => {
     );
 
     let result = await client
-      .db("lebonEndroit")
-      .collection("listing")
-      .insertOne(listing);
+      .db("BlueSky")
+      .collection("event")
+      .insertOne(event);
     response.status(200).json(result);
   } catch (e) {
     console.log(e);
@@ -49,11 +49,11 @@ const getMyEvent = async (req, res) => {
       res.status(401).json({ err: "Unauthorized" });
       return;
     } else {
-      let listings = await client
-        .db("lebonEndroit")
-        .collection("listing")
+      let events = await client
+        .db("BlueSky")
+        .collection("event")
         .find({ userId: authData.id });
-      let apiResponse = await listings.toArray();
+      let apiResponse = await events.toArray();
 
       res.status(200).json(apiResponse);
     }
@@ -61,45 +61,42 @@ const getMyEvent = async (req, res) => {
 };
 
 const getAllEvent = async (request, response) => {
-  let listings = await client.db("lebonEndroit").collection("listing").find();
+  let events = await client.db("BlueSky").collection("event").find();
 
-  let apiResponse = await listings.toArray();
+  let apiResponse = await events.toArray();
   response.status(200).json(apiResponse);
 };
 
 const deleteEvent = async (request, response) => {
-  if (!request.body.userId || !request.body.listingId) {
+  if (!request.body.userId || !request.body.eventId) {
     response.status(400).json({ error: "Some fields are missing" });
     return;
   }
-  let listingId = new ObjectId(request.body.listingId);
+  let eventId = new ObjectId(request.body.eventId);
   let userId = new ObjectId(request.body.userId);
 
   let user = await client
-    .db("lebonEndroit")
+    .db("BlueSky")
     .collection("user")
     .find({ _id: userId });
 
-  let listing = await client
-    .db("lebonEndroit")
-    .collection("listing")
-    .find({ _id: listingId });
+  let event = await client
+    .db("BlueSky")
+    .collection("event")
+    .find({ _id: eventId });
 
-  if (!user || !listing) {
-    response.status(401).json({ error: "Unauthorized mothafucker" });
+  if (!user || !event) {
+    response.status(401).json({ error: "Unauthorized" });
     return;
   }
 
-  if (listing.userId !== user._id || user.role !== "admin") {
-    response.status(401).json({ error: "Unauthorized mothafucker" });
+  if (event.userId !== user._id || user.role !== "admin") {
+    response.status(401).json({ error: "Unauthorized" });
     return;
   }
 
   try {
-    await client
-      .db("lebonEndroit")
-      .collection("listing")
-      .deleteOne({ _id: listingId });
+    await client.db("BlueSky").collection("event").deleteOne({ _id: eventId });
   } catch (e) {
     console.log(e);
     response.status(500).json(e);
@@ -118,31 +115,31 @@ const updateEvent = async (request, response) => {
   }
 
   let user = await client
-    .db("lebonEndroit")
+    .db("BlueSky")
     .collection("user")
     .find({ _id: request.body.userId });
 
-  let listing = await client
-    .db("lebonEndroit")
-    .collection("listing")
-    .find({ _id: request.body.listingId });
+  let event = await client
+    .db("BlueSky")
+    .collection("event")
+    .find({ _id: request.body.eventId });
 
-  if (!user || !listing) {
-    response.status(401).json({ error: "Unauthorized mothafucker" });
+  if (!user || !event) {
+    response.status(401).json({ error: "Unauthorized" });
     return;
   }
 
-  if (listing.userId !== user._id || user.role !== "admin") {
-    response.status(401).json({ error: "Unauthorized mothafucker" });
+  if (event.userId !== user._id || user.role !== "admin") {
+    response.status(401).json({ error: "Unauthorized" });
     return;
   }
 
   try {
     await client
-      .db("lebonEndroit")
-      .collection("listing")
+      .db("BlueSky")
+      .collection("event")
       .updateOne(
-        { _id: listing._id },
+        { _id: event._id },
         {
           $set: {
             title: request.body.title,
