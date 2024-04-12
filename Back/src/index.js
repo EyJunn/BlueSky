@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const { connect } = require("./Services/Connection");
 const userRoutes = require("./Controllers/routes/users");
+const eventRoutes = require("./Controllers/routes/event");
 
 app.use(express.json());
 app.use(cors());
@@ -17,6 +18,7 @@ connect(process.env.DB_URL, (error) => {
 });
 
 app.use("/user", userRoutes);
+app.use("/event", eventRoutes);
 
 console.log("⌛");
 app.listen(3004);

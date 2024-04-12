@@ -9,3 +9,5 @@ async function extractToken(req) {
     return token;
   }
 }
+
+module.exports = { extractToken };

@@ -52,9 +52,9 @@ const login = async (request, response) => {
     return;
   }
 
-  const isValidPasswod = bcrypt.compare(request.body.password, user.password);
+  const isValidPassword = bcrypt.compare(request.body.password, user.password);
 
-  if (!isValidPasswod) {
+  if (!isValidPassword) {
     response.status(401).json({ error: "Wrong credentials" });
   } else {
     const token = jwt.sign(
