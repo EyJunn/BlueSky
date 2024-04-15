@@ -41,7 +41,7 @@ const createEvent = async (request, response) => {
 const getMyEvent = async (req, res) => {
   const token = await extractToken(req);
 
-  jwt.verify(token, process.env.MY_SUPER_SECRET_KEY, async (err, authData) => {
+  jwt.verify(token, process.env.My_Secret_Key, async (err, authData) => {
     if (err) {
       console.log(err);
       res.status(401).json({ err: "Unauthorized" });

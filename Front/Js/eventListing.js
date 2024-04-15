@@ -6,13 +6,13 @@ async function getAllListings() {
   console.log(response);
 
   response.forEach((event) => {
-    cards.innerHTML += `<div class='w-1/3 h-72 mx-6 my-6'><img src='${listing.image}' class='w-48 h-48 object-cover' /> <h2>${listing.title}</h2> <p>${listing.description}</p> <p>${listing.price}</p>'</div>`;
+    cards.innerHTML += `<div class='w-1/3 h-72 mx-6 my-6'><img src='${event.image}' class='w-48 h-48 object-cover' /> <h2>${event.title}</h2> <p>${event.description}</p> <p>${event.price}</p>'</div>`;
   });
 }
 
 getAllListings();
 
-async function createListing() {
+async function createEvent() {
   let title = document.querySelector(".title").value;
   let description = document.querySelector(".description").value;
   let price = document.querySelector(".price").value;
@@ -20,7 +20,7 @@ async function createListing() {
   let category = document.querySelector(".category").value;
   let userId = window.localStorage.getItem("id");
 
-  let listing = {
+  let event = {
     title: title,
     description: description,
     image: image,
@@ -34,7 +34,7 @@ async function createListing() {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
     },
-    body: JSON.stringify(listing),
+    body: JSON.stringify(event),
   };
 
   let apiRequest = fetch("http://localhost:3004/create", request);
