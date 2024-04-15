@@ -18,7 +18,7 @@ connect(process.env.DB_URL, (error) => {
 });
 
 app.use("/user", userRoutes);
-app.use("/event", eventRoutes);
+app.use("/", eventRoutes);
 
 console.log("(🌸◕ワ◕)(⁄ ⁄◕⁄ω⁄◕⁄ ⁄✿)");
 app.listen(3004);

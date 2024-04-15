@@ -1,4 +1,4 @@
-const { event } = require("../Models/Event");
+const { Event } = require("../Models/Event");
 const client = require("../Services/Connection");
 const { ObjectId } = require("bson");
 const { extractToken } = require("../Utils/extractToken");
@@ -9,7 +9,6 @@ const createEvent = async (request, response) => {
   if (
     !request.body.title ||
     !request.body.description ||
-    !request.body.price ||
     !request.body.image ||
     !request.body.category ||
     !request.body.userId
@@ -18,11 +17,10 @@ const createEvent = async (request, response) => {
   }
 
   try {
-    let event = new event(
+    let event = new Event(
       request.body.title,
       request.body.description,
       request.body.image,
-      request.body.price,
       request.body.category,
       request.body.userId,
       new Date(),
@@ -86,14 +84,15 @@ const deleteEvent = async (request, response) => {
     .find({ _id: eventId });
 
   if (!user || !event) {
-    response.status(401).json({ error: "Unauthorized" });
+    response.status(401).json({ error: "Tu ne peux pas." });
     return;
   }
 
-  if (event.userId !== user._id || user.role !== "admin") {
+  if (event.userId !== user._id && user.role !== "admin") {
     response.status(401).json({ error: "Unauthorized" });
     return;
   }
+  response.status(200).json({ msg: "Deleted" });
 
   try {
     await client.db("BlueSky").collection("event").deleteOne({ _id: eventId });
@@ -107,8 +106,8 @@ const updateEvent = async (request, response) => {
   if (
     !request.body.title ||
     !request.body.description ||
-    !request.body.price ||
     !request.body.image ||
+    !request.body.category ||
     !request.body.userId
   ) {
     response.status(400).json({ error: "Some fields are missing" });
@@ -129,10 +128,11 @@ const updateEvent = async (request, response) => {
     return;
   }
 
-  if (event.userId !== user._id || user.role !== "admin") {
+  if (event.userId !== user._id && user.role !== "admin") {
     response.status(401).json({ error: "Unauthorized" });
     return;
   }
+  response.status(200).json({ msg: "Updated" });
 
   try {
     await client
@@ -145,9 +145,8 @@ const updateEvent = async (request, response) => {
             title: request.body.title,
             description: request.body.description,
             image: request.body.image,
-            price: request.body.price,
             category: request.body.category,
-            status: request.body.status,
+            userId: request.body.userId,
           },
         }
       );

@@ -22,7 +22,7 @@ async function handleLogin() {
     window.localStorage.setItem("jwt", data.jwt);
 
     setTimeout(() => {
-      window.location.href = "./allListings.html";
+      window.location.href = "../Html/allEvent.html";
     }, 1000);
   }
 }
@@ -52,6 +52,6 @@ async function handleRegister() {
   let response = await apiRequest;
   console.log(response);
   if (response.status === 200) {
-    window.location.href = "./login.html";
+    window.location.href = "../Html/login.html";
   }
 }
