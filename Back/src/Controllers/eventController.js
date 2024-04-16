@@ -52,7 +52,7 @@ const getMyEvent = async (req, res) => {
         .collection("event")
         .find({ userId: authData.id });
       let apiResponse = await events.toArray();
-
+      console.log(apiResponse);
       res.status(200).json(apiResponse);
     }
   });
@@ -112,16 +112,17 @@ const updateEvent = async (request, response) => {
   ) {
     response.status(400).json({ error: "Some fields are missing" });
   }
-
+  let eventId = new ObjectId(request.body.eventId);
+  let userId = new ObjectId(request.body.userId);
   let user = await client
     .db("BlueSky")
     .collection("user")
-    .find({ _id: request.body.userId });
+    .find({ _id: userId });
 
   let event = await client
     .db("BlueSky")
     .collection("event")
-    .find({ _id: request.body.eventId });
+    .find({ _id: eventId });
 
   if (!user || !event) {
     response.status(401).json({ error: "Unauthorized" });
@@ -139,14 +140,13 @@ const updateEvent = async (request, response) => {
       .db("BlueSky")
       .collection("event")
       .updateOne(
-        { _id: event._id },
+        { _id: eventId },
         {
           $set: {
             title: request.body.title,
             description: request.body.description,
             image: request.body.image,
             category: request.body.category,
-            userId: request.body.userId,
           },
         }
       );
