@@ -52,7 +52,6 @@ const getMyEvent = async (req, res) => {
         .collection("event")
         .find({ userId: authData.id });
       let apiResponse = await events.toArray();
-      console.log(apiResponse);
       res.status(200).json(apiResponse);
     }
   });

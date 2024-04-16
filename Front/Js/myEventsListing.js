@@ -11,11 +11,11 @@ async function getMyEvents() {
     },
   };
 
-  let apiRequest = await fetch("http://localhost:3004/event/mine", request);
+  let apiRequest = await fetch("http://localhost:3004/mine", request);
   let response = await apiRequest.json();
 
   response.forEach((event) => {
-    cards.innerHTML += `<div class='w-1/3 h-72 mx-6 my-6'><img src='${event.image}' class='w-48 h-48 object-cover' /> <h2>${event.title}</h2> <p>${event.description}</p> <p>${event.price}</p>' <div> <button class='btnDelete-${event._id}' > <i class="fa-solid fa-trash"></i> </button>  <button class='ml-2 btnEdit-${event._id}' >         <i class="fa-solid fa-pen-to-square"></i>
+    cards.innerHTML += `<div class='w-1/3 h-72 mx-6 my-6'><img src='${event.image}' class='w-48 h-48 object-cover' /> <h2>${event.title}</h2> <p>${event.description}</p> <p>${event.price}</p>' <div> <button class='btnDelete-${event._id}' > <i class="fa-solid fa-trash"></i> </button>  <button class='ml-2 btnEdit-${event._id}' ><i class="fa-solid fa-pen-to-square"></i>
  </button> </div></div>`;
 
     let btn = document.querySelector(`.btnDelete-${event._id}`);
@@ -41,7 +41,7 @@ async function deleteEvent(eventId) {
     body: JSON.stringify(id),
   };
 
-  let apiRequest = await fetch("http://localhost:3004/event/mine", request);
+  let apiRequest = await fetch("http://localhost:3004/mine", request);
   let response = await apiRequest.json();
 }
 let modal = document.querySelector(".modal");
