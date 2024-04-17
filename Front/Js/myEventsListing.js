@@ -4,14 +4,14 @@ async function getMyEvents() {
   let jwt = window.localStorage.getItem("jwt");
 
   let request = {
-    method: "POST",
+    method: "GET",
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       Authorization: `Bearer ${jwt}`,
     },
   };
 
-  let apiRequest = await fetch("http://localhost:3004/mine", request);
+  let apiRequest = await fetch("http://localhost:3004/myCreation", request);
   let response = await apiRequest.json();
 
   response.forEach((event) => {
@@ -69,5 +69,5 @@ function endEditEvent() {
   let image = document.querySelector(".image").value;
   let category = document.querySelector(".category").value;
 
-  console.log(title, description, price, image);
+  console.log(title, description, image, category);
 }

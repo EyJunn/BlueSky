@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.route("/create").post(createEvent);
 router.route("/all").get(getAllEvent);
-router.route("/mine", extractToken).get(getMyEvent);
+router.route("/myCreation", extractToken).get(getMyEvent);
 router.route("/update").patch(updateEvent);
 router.route("/delete").delete(deleteEvent);
 
