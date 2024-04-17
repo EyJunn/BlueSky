@@ -1,5 +1,5 @@
 let cards = document.querySelector(".cards");
-console.log(cards);
+
 async function getAllListings() {
   let apiCall = await fetch("http://localhost:3004/all");
   let response = await apiCall.json();
@@ -12,7 +12,7 @@ async function getAllListings() {
 
 getAllListings();
 
-async function createEvent() {
+async function createEve() {
   let title = document.querySelector(".title").value;
   let description = document.querySelector(".description").value;
   let image = document.querySelector(".image").value;
@@ -37,9 +37,7 @@ async function createEvent() {
 
   let apiRequest = fetch("http://localhost:3004/create", request);
   let response = await apiRequest;
-  console.log(response);
   if (response.status === 200) {
-    console.log(response);
     window.location.href = "../Html/allEvent.html";
   }
 }

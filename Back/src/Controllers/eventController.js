@@ -10,8 +10,7 @@ const createEvent = async (request, response) => {
     !request.body.title ||
     !request.body.description ||
     !request.body.image ||
-    !request.body.category ||
-    !request.body.userId
+    !request.body.category
   ) {
     response.status(400).json({ error: "Some fields are missing" });
   }
