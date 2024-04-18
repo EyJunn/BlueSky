@@ -14,6 +14,6 @@ router.route("/create").post(createEvent);
 router.route("/all").get(getAllEvent);
 router.route("/myCreation", extractToken).get(getMyEvent);
 router.route("/update").patch(updateEvent);
-router.route("/delete").delete(deleteEvent);
+router.route("/delete/:id").delete(deleteEvent);
 
 module.exports = router;

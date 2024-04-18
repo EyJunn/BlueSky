@@ -6,35 +6,45 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const createEvent = async (request, response) => {
-  if (
-    !request.body.title ||
-    !request.body.description ||
-    !request.body.image ||
-    !request.body.category
-  ) {
-    response.status(400).json({ error: "Some fields are missing" });
-  }
+  const token = await extractToken(request);
 
-  try {
-    let event = new Event(
-      request.body.title,
-      request.body.description,
-      request.body.image,
-      request.body.category,
-      request.body.userId,
-      new Date(),
-      "published"
-    );
+  jwt.verify(token, process.env.My_Secret_Key, async (err, authData) => {
+    if (err) {
+      console.log(err);
+      res.status(401).json({ err: "Unauthorized" });
+      return;
+    } else {
+      if (
+        !request.body.title ||
+        !request.body.description ||
+        !request.body.image ||
+        !request.body.category
+      ) {
+        response.status(400).json({ error: "Some fields are missing" });
+      }
 
-    let result = await client
-      .db("BlueSky")
-      .collection("event")
-      .insertOne(event);
-    response.status(200).json(result);
-  } catch (e) {
-    console.log(e);
-    response.status(500).json(e);
-  }
+      try {
+        let event = new Event(
+          request.body.title,
+          request.body.description,
+          request.body.image,
+          request.body.category,
+          authData.id,
+          new Date(),
+          "published"
+        );
+
+        let result = await client
+          .db("BlueSky")
+          .collection("event")
+          .insertOne(event);
+        response.status(200).json(result);
+      } catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+      }
+    }
+  });
 };
 
 const getMyEvent = async (req, res) => {
@@ -64,40 +74,33 @@ const getAllEvent = async (request, response) => {
 };
 
 const deleteEvent = async (request, response) => {
-  if (!request.body.userId || !request.body.eventId) {
-    response.status(400).json({ error: "Some fields are missing" });
-    return;
-  }
-  let eventId = new ObjectId(request.body.eventId);
-  let userId = new ObjectId(request.body.userId);
+  const token = await extractToken(request);
 
-  let user = await client
-    .db("BlueSky")
-    .collection("user")
-    .find({ _id: userId });
+  jwt.verify(token, process.env.My_Secret_Key, async (err, authData) => {
+    if (err) {
+      console.log(err);
+      response.status(401).json({ err: "Unauthorized" });
+      return;
+    } else {
+      if (!request.params.id) {
+        response.status(400).json({ msg: "Miss Id" });
+      }
+      let id = new ObjectId(request.params.id);
 
-  let event = await client
-    .db("BlueSky")
-    .collection("event")
-    .find({ _id: eventId });
+      let annonceSupprimer = await client
+        .db("BlueSky")
+        .collection("event")
+        .deleteOne({ _id: id });
 
-  if (!user || !event) {
-    response.status(401).json({ error: "Tu ne peux pas." });
-    return;
-  }
+      let res = await annonceSupprimer;
 
-  if (event.userId !== user._id && user.role !== "admin") {
-    response.status(401).json({ error: "Unauthorized" });
-    return;
-  }
-  response.status(200).json({ msg: "Deleted" });
-
-  try {
-    await client.db("BlueSky").collection("event").deleteOne({ _id: eventId });
-  } catch (e) {
-    console.log(e);
-    response.status(500).json(e);
-  }
+      if (res.deletedCount === 1) {
+        response.status(200).json({ msg: "Suppression réussit" });
+      } else {
+        response.status(204).json({ msg: "Invalid activity" });
+      }
+    }
+  });
 };
 
 const updateEvent = async (request, response) => {
