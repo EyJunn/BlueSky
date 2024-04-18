@@ -13,7 +13,7 @@ async function getAllListings() {
   console.log(response);
 
   response.forEach((event) => {
-    cards.innerHTML += `<div class='w-1/3 h-72 mx-6 my-6'><img src='${event.image}' class='w-48 h-48 object-cover' /> <h2>${event.title}</h2> <p>${event.description}</p> <p>${event.participantMax}</p></div>`;
+    cards.innerHTML += `<div class='w-1/3 h-72 mx-6 my-6'><img src='${event.image}' class='w-48 h-48 object-cover' /> <h2>${event.title}</h2> <p>${event.description}</p> <p>${event.category}</p> <p>${event.participantMax}</p></div>`;
   });
 }
 
@@ -26,7 +26,7 @@ async function createEve() {
   let category = document.querySelector(".category").value;
   let participantMax = document.querySelector(".Participant").value;
   let jwt = window.localStorage.getItem("jwt");
-  console.log(participantMax);
+
   let event = {
     title: title,
     description: description,

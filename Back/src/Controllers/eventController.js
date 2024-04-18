@@ -31,7 +31,9 @@ const createEvent = async (request, response) => {
           request.body.category,
           authData.id,
           new Date(),
-          "published"
+          "published",
+          request.body.participantMax,
+          authData.id
         );
 
         let result = await client

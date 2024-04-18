@@ -22,7 +22,7 @@ async function getMyEvents() {
   let response = await apiRequest.json();
   console.log(response);
   response.forEach((event) => {
-    cards.innerHTML += `<div class='w-1/3 h-72 mx-6 my-6'><img src='${event.image}' class='w-48 h-48 object-cover' /> <h2>${event.title}</h2> <p>${event.description}</p> <p>${event.category}</p>' <div> <button class='btnDelete-${event._id}' > <i class="fa-solid fa-trash"></i> </button>  <button class='ml-2 btnEdit-${event._id}' ><i class="fa-solid fa-pen-to-square"></i></button></div></div>`;
+    cards.innerHTML += `<div class='w-1/3 h-72 mx-6 my-6'><img src='${event.image}' class='w-48 h-48 object-cover' /> <h2>${event.title}</h2> <p>${event.description}</p> <p>${event.category}</p>' <p>${event.participantMax} <div> <button class='btnDelete-${event._id}' > <i class="fa-solid fa-trash"></i> </button>  <button class='ml-2 btnEdit-${event._id}' ><i class="fa-solid fa-pen-to-square"></i></button></div></div>`;
 
     let btn = document.querySelector(`.btnDelete-${event._id}`);
     btn.addEventListener("click", () => {
