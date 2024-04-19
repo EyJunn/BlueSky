@@ -150,6 +150,7 @@ const updateEvent = async (request, response) => {
             description: request.body.description,
             image: request.body.image,
             category: request.body.category,
+            participantMax: request.body.participantMax,
           },
         }
       );
@@ -159,10 +160,72 @@ const updateEvent = async (request, response) => {
   }
 };
 
+const addParticipant = async (req, res) => {
+  const token = await extractToken(req);
+
+  jwt.verify(token, process.env.My_Secret_Key, async (err, authData) => {
+    if (err) {
+      console.log(err);
+      res.status(401).json({ err: "Unauthorized" });
+      return;
+    } else {
+      const id = new ObjectId(req.params.id);
+
+      try {
+        let bouga = await client
+          .db("BlueSky")
+          .collection("event")
+          .updateOne(
+            { _id: id },
+            {
+              $addToSet: {
+                participant: authData.id,
+              },
+            }
+          );
+        res.status(200).json({ msg: "Ajout Réussit" });
+      } catch (e) {
+        res.status(500).json(e);
+      }
+    }
+  });
+};
+
+const retirerParticipant = async (req, res) => {
+  const token = await extractToken(req);
+
+  jwt.verify(token, process.env.My_Secret_Key, async (err, authData) => {
+    if (err) {
+      console.log(err);
+      res.status(401).json({ err: "Unauthorized" });
+      return;
+    } else {
+      const id = new ObjectId(req.params.id);
+
+      try {
+        let bougabouga = await client
+          .db("BlueSky")
+          .collection("event")
+          .updateOne(
+            { _id: id },
+            {
+              $pull: { participant: authData.id },
+            }
+          );
+        res.status(200).json({ msg: "Participant retiré" });
+      } catch {
+        res.status(500).json({ msg: "Pas d'event pour cet id" });
+      }
+    }
+  });
+};
+
 module.exports = {
   createEvent,
   updateEvent,
   getAllEvent,
   getMyEvent,
   deleteEvent,
+  addParticipant,
+  retirerParticipant,
 };

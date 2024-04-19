@@ -7,17 +7,55 @@ LogOut.addEventListener("click", () => {
   window.location.href = "./Login.html";
 });
 
-async function getAllListings() {
+async function getAllEvent() {
   let apiCall = await fetch("http://localhost:3004/all");
   let response = await apiCall.json();
   console.log(response);
 
   response.forEach((event) => {
-    cards.innerHTML += `<div class='w-1/3 h-72 mx-6 my-6'><img src='${event.image}' class='w-48 h-48 object-cover' /> <h2>${event.title}</h2> <p>${event.description}</p> <p>${event.category}</p> <p>${event.participantMax}</p></div>`;
+    cards.innerHTML += `<div class='w-1/3 h-72 mx-6 my-6'><img src='${event.image}' class='w-48 h-48 object-cover' /> <h2>${event.title}</h2> <p>${event.description}</p> <p>${event.category}</p> <p>${event.participant.length} / ${event.participantMax}</p><button onclick="addParticipant('${event._id}')">Participer</button> <button onclick="retirerParticipant('${event._id}')">Cancel</button></div>`;
   });
 }
 
-getAllListings();
+getAllEvent();
+
+async function addParticipant(Id) {
+  let jwt = window.localStorage.getItem("jwt");
+
+  if (!jwt) {
+    console.log("Jwt invalid");
+  }
+
+  let request = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      Authorization: `Bearer ${jwt}`,
+    },
+  };
+
+  await fetch(`http://localhost:3004/addParticipant/${Id}`, request);
+  window.location.reload();
+}
+
+async function retirerParticipant(Id) {
+  let jwt = window.localStorage.getItem("jwt");
+
+  if (!jwt) {
+    console.log("Jwt invalid");
+  }
+
+  let request = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      Authorization: `Bearer ${jwt}`,
+    },
+  };
+
+  await fetch(`http://localhost:3004/retirerParticipant/${Id}`, request);
+  window.location.reload();
+}
 
 async function createEve() {
   let title = document.querySelector(".title").value;
@@ -73,29 +111,4 @@ async function deleteEvent(eventId) {
 
 let modal = document.querySelector(".modal");
 
-async function editEvent(eventId, event) {
-  let title = document.querySelector(".title");
-  let description = document.querySelector(".description");
-  let image = document.querySelector(".image");
-  let category = document.querySelector(".category");
-  let participant = document.querySelector(".Participant");
 
-  title.value = event.title;
-  description.value = event.description;
-  image.value = event.image;
-  category.value = event.category;
-  participant.value = event.participant;
-
-  modal.classList.remove("hidden");
-}
-
-function endEditEvent() {
-  modal.classList.add("hidden");
-
-  let title = document.querySelector(".title").value;
-  let description = document.querySelector(".description").value;
-  let image = document.querySelector(".image").value;
-  let category = document.querySelector(".category").value;
-
-  console.log(title, description, image, category);
-}
